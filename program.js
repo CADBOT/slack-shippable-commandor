@@ -8,7 +8,6 @@ var commands = {
 }
 
 function build(project) {
- console.log("building " + project) 
   var options = {
     hostname: 'apibeta.shippable.com',
     path: "/projects/" + project + "/builds/new",
@@ -36,7 +35,6 @@ function command_processor(command_str) {
 }
 
 function write_result_to_slack(output) {
-  console.log(output)
   var options = {
     hostname: 'hooks.slack.com',
     path: '/services/T03QGDMRG/B03RENCT1/5XIFxu0dsJzsHfKwOb7Ix4Zv',
@@ -51,13 +49,6 @@ function write_result_to_slack(output) {
   })
 
   var req = https.request(options, function(res) {
-    console.log("statusCode: ", res.statusCode);
-    console.log("headers: ", res.headers);
-
-
-    res.on('data', function(d) {
-      process.stdout.write(d);
-    });
   })
   req.write(body_data)
   req.end()
@@ -65,7 +56,6 @@ function write_result_to_slack(output) {
 
 app.get('/slack', function(req, res) {
   res.send(req.body)
-  console.log(req.query.text)
   if (req.query.token == 'ML6frujgk0ekVKkNfM77qwlm') {
     var command_str =req.query.text
     command_processor(command_str)
