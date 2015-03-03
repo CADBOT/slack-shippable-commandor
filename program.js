@@ -13,7 +13,7 @@ function build(project) {
     hostname: 'apibeta.shippable.com',
     path: "/projects/" + project + "/builds/new",
     method: 'POST',
-    headers: {'Authorization': 'apiToken ' + process.env[apiToken]}
+    headers: {'Authorization': 'apiToken ' + process.env.apiToken}
   }
   var callback = function(response) {
     var output = ''
@@ -40,13 +40,16 @@ function write_result_to_slack(output) {
   var options = {
     hostname: 'hooks.slack.com',
     path: '/services/T03QGDMRG/B03RENCT1/5XIFxu0dsJzsHfKwOb7Ix4Zv',
-    method: 'GET',
+    method: 'POST',
     headers: { 
-      'payload': "{'text': 'hello from slack'}"
+      'Content-Type': 'application/json'
     }
   }
-  var payload = {text: 'Hello from middleware!'}
-  var body_data = querystring.stringify(payload)
+
+  var body_data = JSON.stringify({
+    "text": output
+  })
+
   var req = https.request(options, function(res) {
     console.log("statusCode: ", res.statusCode);
     console.log("headers: ", res.headers);
