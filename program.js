@@ -5,7 +5,8 @@ var request = require('request')
 var app = express()
 
 var commands = {
-  build: build
+  build: build,
+  isCompleted: isCompleted
 }
 
 function build(project) {
@@ -21,7 +22,21 @@ function build(project) {
   }
   request.post(options, function(err, res, body) {
     var buildId = res.body.buildId
+    console.log(body)
     write_result_to_slack(buildId)
+  })
+}
+
+function isCompleted(build) {
+  var options = {
+    headers: {'Authorization': 'apiToken ' + process.env.apiToken},
+    url: 'https://api.shippable.com/builds/' + build,
+  }
+  request.get(options, function(err, res, body) {
+    var result = JSON.parse(body).isCompleted
+    // Otherwise slack will write the result as 0 or 1
+    result = result.toString()
+    write_result_to_slack(result)
   })
 }
 
