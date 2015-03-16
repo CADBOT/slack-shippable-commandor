@@ -58,7 +58,7 @@ function write_result_to_slack(output) {
 app.get('/slack', function(req, res) {
   res.send(req.body)
   if (req.query.token == process.env.SlackToken) {
-    var command_str =req.query.text
+    var command_str = req.query.text
     command_processor(command_str)
   }
 })
