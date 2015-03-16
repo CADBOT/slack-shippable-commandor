@@ -22,7 +22,6 @@ function build(project) {
   }
   request.post(options, function(err, res, body) {
     var buildId = res.body.buildId
-    console.log(body)
     write_result_to_slack(buildId)
   })
 }
