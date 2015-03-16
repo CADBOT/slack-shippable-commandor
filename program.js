@@ -48,7 +48,7 @@ function command_processor(command_str) {
 }
 
 function write_result_to_slack(output) {
-  payload = {
+  var payload = {
     text: output
   }
 
