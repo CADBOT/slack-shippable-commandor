@@ -20,7 +20,8 @@ function build(project) {
     body: postData
   }
   request.post(options, function(err, res, body) {
-    console.log(res)
+    var buildId = res.body.buildId
+    write_result_to_slack(buildId)
   })
 }
 
@@ -32,23 +33,11 @@ function command_processor(command_str) {
 }
 
 function write_result_to_slack(output) {
-  var options = {
-    hostname: 'hooks.slack.com',
-    path: '/services/T03QGDMRG/B03RENCT1/5XIFxu0dsJzsHfKwOb7Ix4Zv',
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json'
-    }
+  payload = {
+    text: output
   }
 
-  var body_data = JSON.stringify({
-    "text": output
-  })
-
-  var req = https.request(options, function(res) {
-  })
-  req.write(body_data)
-  req.end()
+  request.post('https://hooks.slack.com/services/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').form(JSON.stringify(payload))
 }
 
 app.get('/slack', function(req, res) {
