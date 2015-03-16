@@ -1,6 +1,7 @@
 var express = require('express')
 var https = require('https')
 var querystring = require('querystring');
+var request = require('request')
 var app = express()
 
 var commands = {
@@ -8,23 +9,19 @@ var commands = {
 }
 
 function build(project) {
-  var options = {
-    hostname: 'apibeta.shippable.com',
-    path: "/projects/" + project + "/builds/new",
-    method: 'POST',
-    headers: {'Authorization': 'apiToken ' + process.env.apiToken}
+  var postData = {
+    projectId: project
   }
-  var callback = function(response) {
-    var output = ''
-    response.on('data', function(chunk) {
-      output += chunk
-    })
 
-    response.on('end', function () {
-      write_result_to_slack(output)
-    })
+  var options = {
+    headers: {'Authorization': 'apiToken ' + process.env.apiToken},
+    url: 'https://api.shippable.com/workflow/triggerBuild',
+    json: true,
+    body: postData
   }
-  https.request(options, callback).end()
+  request.post(options, function(err, res, body) {
+    console.log(res)
+  })
 }
 
 function command_processor(command_str) {
@@ -56,7 +53,7 @@ function write_result_to_slack(output) {
 
 app.get('/slack', function(req, res) {
   res.send(req.body)
-  if (req.query.token == process.env.slackToken) {
+  if (req.query.token == process.env.SlackToken) {
     var command_str =req.query.text
     command_processor(command_str)
   }
